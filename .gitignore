@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# artifacts — never commit
+runs/
+adapters/
+merges/
+data/
+cache/
+*.safetensors
+*.bin
+*.pt
+*.ckpt
