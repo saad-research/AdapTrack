@@ -24,3 +24,7 @@ pandas==2.3.3
 # You do not need it: all your merges are LoRA-level, and you are materializing the
 # delta yourself anyway. If you want full-model merges later, put mergekit in its
 # own venv and pass tensors between them on disk.
+
+# Colab preinstalls torchao 0.10.0; peft 0.20.0 requires >0.16.0 and raises
+# ImportError rather than skipping. We don't use quantization — uninstall it:
+#   pip uninstall -y torchao

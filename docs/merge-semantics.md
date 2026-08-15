@@ -23,3 +23,6 @@ LoRA factorization is only unique up to A→QA, B→BQ⁻¹. Elementwise operati
 on factors are gauge-dependent. Apply them to Δ.
  
 Re-run scripts/verify_merge_semantics.py after any peft upgrade.
+
+
+

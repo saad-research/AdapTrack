@@ -13,3 +13,70 @@ cache/
 *.bin
 *.pt
 *.ckpt
+
+
+
+
+
+
+
+
+# --- the anonymity-critical ones ---
+*.pdf.bak
+paper/**/*.synctex.gz
+.DS_Store
+*.swp
+# LaTeX embeds your OS username in /Author and /Creator. Strip before upload:
+#   exiftool -all= main.pdf     or    qpdf --linearize
+paper/main.pdf
+ 
+# --- weights and bulk artifacts ---
+adapters/
+merges/
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+checkpoints/
+wandb/
+runs/
+outputs/
+ 
+# keep features and results, they are small and are the paper
+!features_out/*.csv
+!results/*.json
+ 
+# --- data ---
+data/
+*.parquet
+*.arrow
+~/.cache/huggingface
+ 
+# --- python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.ipynb_checkpoints/
+.pytest_cache/
+ 
+# --- latex ---
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+ 
+# --- secrets ---
+.env
+*.key
+hf_token*
