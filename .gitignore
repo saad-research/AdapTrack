@@ -47,7 +47,7 @@ outputs/
 !results/*.json
  
 # --- data ---
-data/
+/data/
 *.parquet
 *.arrow
 ~/.cache/huggingface

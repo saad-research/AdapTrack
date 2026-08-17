@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import time
 
+import numpy as np
+
 import torch
 
 
@@ -98,7 +100,18 @@ def train_one_adapter(base, tok, texts, out_dir, *, r=8, alpha=16, dropout=0.05,
         s_per_step=wall / max(out.global_step, 1),
         train_loss=float(out.training_loss),
         peak_reserved_gb=torch.cuda.max_memory_reserved() / 1e9,
-        n_examples=len(texts), tok_p50=int(sorted(lens)[len(lens) // 2]),
+        n_examples=len(texts),
+        # Token volume is logged because equal EXAMPLE counts do not imply equal
+        # token counts: at max_len 512 a summarization example is ~6x a
+        # multiple-choice one. Total tokens is the covariate that makes the
+        # difference auditable instead of inferable from wall-clock.
+        total_tokens=int(sum(lens)),
+        tok_mean=float(np.mean(lens)),
+        tok_p50=int(sorted(lens)[len(lens) // 2]),
+        tok_p95=int(sorted(lens)[int(len(lens) * 0.95)]),
+        tok_max=int(max(lens)),
+        frac_truncated=float(np.mean([l >= max_len for l in lens])),
+        max_len=max_len,
     )
 
     base_restored = model.unload()          # strips LoRA, keeps base weights
