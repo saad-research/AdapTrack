@@ -158,7 +158,7 @@ def main():
         since_reload += 1
 
         manifest[key] = dict(family=fam, adapter_idx=k, base=args.base,
-                             n_examples=args.n_examples, idx_checksum=checksum,
+                             idx_checksum=checksum,
                              idx_min=int(idx.min()), idx_max=int(idx.max()),
                              **stats)
         man_p.write_text(json.dumps(manifest, indent=2))   # after EVERY adapter
