@@ -154,11 +154,11 @@ def main():
 
     d = Path(args.probe_dir)
     manifest = json.loads((d / "manifest.json").read_text())
-    sel = {k: m for k, m in manifest.items() if m.get("n") == args.n}
+    sel = {k: m for k, m in manifest.items()
+           if m.get("n", m.get("n_examples")) == args.n}
     if not sel:
         sys.exit(f"no adapters at n={args.n}. present: "
-                 f"{sorted({m.get('n') for m in manifest.values()})}")
-
+                 f"{sorted({m.get('n', m.get('n_examples')) for m in manifest.values()})}")
     keys = sorted(sel)
     print(f"analysing {len(keys)} adapters at n={args.n}")
     views_all, fam, loss, toks = [], [], [], []
