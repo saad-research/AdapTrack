@@ -1,0 +1,17 @@
+feature,target,r2,lo,hi
+fro_quad,medical,0.957,0.925,0.986
+fro_quad,legal,0.960,0.929,0.988
+nuc,medical,0.829,0.720,0.910
+nuc,legal,0.854,0.773,0.919
+sv_1,medical,0.408,0.291,0.561
+sv_1,legal,0.353,0.206,0.487
+conc,medical,0.404,0.276,0.500
+conc,legal,0.334,0.239,0.436
+stable_rank,medical,0.379,0.282,0.465
+stable_rank,legal,0.332,0.227,0.446
+fro_arith,medical,0.351,0.175,0.495
+fro_arith,legal,0.245,0.123,0.368
+eff_rank,medical,0.231,0.134,0.311
+eff_rank,legal,0.139,0.082,0.249
+entropy,medical,0.077,0.030,0.129
+entropy,legal,0.026,0.005,0.075
