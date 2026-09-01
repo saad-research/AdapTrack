@@ -1,0 +1,104 @@
+[
+  {
+    "arm": "noise",
+    "mode": null,
+    "c": 0.0,
+    "cos": 1.0,
+    "auc_naive": 0.9288194444444444,
+    "auc_corrected": 0.9288194444444444,
+    "auc_adaptive": 0.9288194444444444,
+    "tpr1_adaptive": 0.75,
+    "tpr5_adaptive": 0.75,
+    "ci_adaptive": [
+      0.8965113803683861,
+      0.9557146766582251
+    ],
+    "n_test": 68,
+    "n_train": 161
+  },
+  {
+    "arm": "noise",
+    "mode": null,
+    "c": 1.0,
+    "cos": 0.7070966289705755,
+    "auc_naive": 0.8836805555555556,
+    "auc_corrected": 0.9322916666666666,
+    "auc_adaptive": 0.9340277777777777,
+    "tpr1_adaptive": 0.7777777777777778,
+    "tpr5_adaptive": 0.8055555555555556,
+    "ci_adaptive": [
+      0.9106144768824793,
+      0.9638413740787292
+    ],
+    "n_test": 68,
+    "n_train": 161
+  },
+  {
+    "arm": "canon",
+    "mode": "profile",
+    "c": 0.0,
+    "cos": 1.0,
+    "auc_naive": 0.3984375,
+    "auc_corrected": 0.4131944444444444,
+    "auc_adaptive": 0.8767361111111112,
+    "tpr1_adaptive": 0.7222222222222222,
+    "tpr5_adaptive": 0.7777777777777778,
+    "ci_adaptive": [
+      0.8199621033832118,
+      0.9234953981592635
+    ],
+    "n_test": 68,
+    "n_train": 161
+  },
+  {
+    "arm": "canon",
+    "mode": "profile",
+    "c": 1.0,
+    "cos": 0.7070966289705755,
+    "auc_naive": 0.5095486111111112,
+    "auc_corrected": 0.4539930555555556,
+    "auc_adaptive": 0.8723958333333333,
+    "tpr1_adaptive": 0.7222222222222222,
+    "tpr5_adaptive": 0.7222222222222222,
+    "ci_adaptive": [
+      0.8154510713870105,
+      0.9236550356304045
+    ],
+    "n_test": 68,
+    "n_train": 161
+  },
+  {
+    "arm": "canon",
+    "mode": "full",
+    "c": 0.0,
+    "cos": 1.0,
+    "auc_naive": 0.35590277777777785,
+    "auc_corrected": 0.3862847222222222,
+    "auc_adaptive": 0.8819444444444444,
+    "tpr1_adaptive": 0.75,
+    "tpr5_adaptive": 0.7777777777777778,
+    "ci_adaptive": [
+      0.8297102936219988,
+      0.9343376105738407
+    ],
+    "n_test": 68,
+    "n_train": 161
+  },
+  {
+    "arm": "canon",
+    "mode": "full",
+    "c": 1.0,
+    "cos": 0.7070966289705755,
+    "auc_naive": 0.5199652777777778,
+    "auc_corrected": 0.38107638888888884,
+    "auc_adaptive": 0.881076388888889,
+    "tpr1_adaptive": 0.75,
+    "tpr5_adaptive": 0.7777777777777778,
+    "ci_adaptive": [
+      0.8299133101040206,
+      0.9350194326997866
+    ],
+    "n_test": 68,
+    "n_train": 161
+  }
+]
