@@ -1,19 +1,29 @@
 # AdapTrack env  (Python 3.12; torch >=2.6 from the Colab image, do NOT reinstall)
 # Resolver-verified 2026-07-30. transformers is held at the last 4.x on purpose:
 # see requirements-ismbench.txt for why 5.x is off the table project-wide.
+#
+# These pins target the COLAB runtime, where everything actually runs. The local
+# .venv is for editing and has drifted (datasets 5.0.1, scikit-learn 1.9.0,
+# scipy 1.18.1, torch 2.13.0+cpu). That drift is expected — do not try to
+# reconcile the two.
 
 transformers==4.57.6
 peft==0.20.0
 datasets==4.8.5
-accelerate==1.14.0
+accelerate==1.14.0     # not imported directly; pinned because mergekit conflicts (below)
 safetensors==0.8.0
-opacus==1.6.0          # needs torch>=2.6; cuttable per roadmap Aug-18 rule
-trl==1.9.2             # only if using SFTTrainer; plain Trainer needs nothing extra
+
 scikit-learn==1.8.0    # logistic regression + AUC for the provenance classifier
 scipy==1.16.3
-pandas==2.3.3
+numpy==2.4.6
+matplotlib==3.11.1     # make_composition_fig.py only
 
-# bitsandbytes only if actually go 4-bit. TinyLlama-1.1B in fp16 is ~2.2GB of
+# Removed 2026-09: opacus, trl, pandas. None is imported anywhere under
+# scripts/ or src/. opacus was for a DP arm that became an argument rather than
+# an experiment (paper, Section 6); trl was for SFTTrainer, but train/adapter.py
+# uses the plain Trainer. Re-add opacus if the DP arm is ever run.
+
+# bitsandbytes only if actually going 4-bit. TinyLlama-1.1B in fp16 is ~2.2GB of
 # weights and trains unquantized inside 16GB, so QLoRA buys you nothing here and
 # costs a fragile CUDA-coupled dependency. Uncomment only for the Llama-3.2-3B
 # redactor in IsmBench, or if moving to an 8B base.
@@ -21,8 +31,8 @@ pandas==2.3.3
 
 # mergekit is deliberately ABSENT. mergekit 0.1.4 pins accelerate~=1.6.0, which is
 # incompatible with accelerate 1.14.0 above (verified: ResolutionImpossible).
-# You do not need it: all your merges are LoRA-level, and you are materializing the
-# delta yourself anyway. If you want full-model merges later, put mergekit in its
+# You do not need it: all merges are LoRA-level and the delta is materialized
+# directly (src/merge/delta.py). For full-model merges later, put mergekit in its
 # own venv and pass tensors between them on disk.
 
 # Colab preinstalls torchao 0.10.0; peft 0.20.0 requires >0.16.0 and raises

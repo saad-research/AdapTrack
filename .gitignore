@@ -1,68 +1,39 @@
-.venv/
+# --- python ---
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
 .ipynb_checkpoints/
+.pytest_cache/
 
-# artifacts — never commit
-runs/
+# --- weights and bulk artifacts, never commit ---
 adapters/
 merges/
-data/
+runs/
+outputs/
+checkpoints/
+wandb/
 cache/
 *.safetensors
 *.bin
 *.pt
 *.ckpt
 
-
-
-
-
-
-
-
-# --- the anonymity-critical ones ---
-*.pdf.bak
-paper/**/*.synctex.gz
-.DS_Store
-*.swp
-# LaTeX embeds your OS username in /Author and /Creator. Strip before upload:
-#   exiftool -all= main.pdf     or    qpdf --linearize
-paper/main.pdf
- 
-# --- weights and bulk artifacts ---
-adapters/
-merges/
-*.safetensors
-*.bin
-*.pt
-*.ckpt
-checkpoints/
-wandb/
-runs/
-outputs/
- 
-# keep features and results, they are small and are the paper
-!features_out/*.csv
-!results/*.json
- 
 # --- data ---
 /data/
 *.parquet
 *.arrow
-~/.cache/huggingface
- 
-# --- python ---
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-env/
-*.egg-info/
-.ipynb_checkpoints/
-.pytest_cache/
- 
-# --- latex ---
+
+# results/ and figs/ are NOT ignored. The JSONs are small and every number in
+# the paper comes from them; figs/composition.pdf is Figure 1. Track them.
+
+# --- editor / os ---
+.DS_Store
+*.swp
+
+# --- latex, if you ever build a local copy of the Overleaf source ---
 *.aux
 *.log
 *.out
@@ -75,8 +46,10 @@ env/
 *.nav
 *.snm
 *.vrb
- 
+*.pdf.bak
+
 # --- secrets ---
 .env
 *.key
+*.pem
 hf_token*
