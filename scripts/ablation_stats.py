@@ -97,6 +97,7 @@ def main():
     ap.add_argument("--target", default="medical")
     ap.add_argument("--n-boot", type=int, default=1000)
     ap.add_argument("--max-linear-merges", type=int, default=60)
+    ap.add_argument("--out", default=None, help="write Test A results as JSON (Table 6 in the paper)")
     args = ap.parse_args()
 
     feat = Path(args.features)
@@ -138,18 +139,37 @@ def main():
         print(f"{n:<20}{d:>6}{a:>9.4f}"
               f"{f'[{np.percentile(b,2.5):.3f}, {np.percentile(b,97.5):.3f}]':>20}")
 
-    best = order[0]
-    print(f"\npaired differences against '{best}' "
-          f"(CI excluding 0 = a real gap):")
-    for n in order[1:]:
-        d = boots[best] - boots[n]
-        lo, hi = np.percentile(d, 2.5), np.percentile(d, 97.5)
-        sig = "DISTINGUISHABLE" if lo > 0 else "tied"
-        print(f"  {best} - {n:<20} {d.mean():+.4f}  "
-              f"[{lo:+.4f}, {hi:+.4f}]  {sig}")
-    print("\nGroups marked 'tied' must be reported as tied. An ordering among")
-    print("them is not supported by this test set and a reviewer who reruns it")
-    print("will find that out.")
+        best = order[0]
+        print(f"\npaired differences against '{best}' "
+              f"(CI excluding 0 = a real gap):")
+        out = {"target": args.target, "n_test": int(len(yte)),
+               "n_boot": int(args.n_boot), "best_group": best,
+               "groups": {}, "paired_differences": {}}
+        for n in order:
+            d = len([i for i, c in enumerate(cols) if c in set(groups[n])])
+            b = boots[n]
+            out["groups"][n] = {
+                "dims": int(d),
+                "auc": float(roc_auc_score(yte, scores[n])),
+                "ci": [float(np.percentile(b, 2.5)), float(np.percentile(b, 97.5))],
+            }
+        for n in order[1:]:
+            d = boots[best] - boots[n]
+            lo, hi = float(np.percentile(d, 2.5)), float(np.percentile(d, 97.5))
+            sig = "DISTINGUISHABLE" if lo > 0 else "tied"
+            out["paired_differences"][f"{best} - {n}"] = {
+                "mean": float(d.mean()), "lo": lo, "hi": hi, "verdict": sig,
+            }
+            print(f"  {best} - {n:<20} {d.mean():+.4f}  "
+                  f"[{lo:+.4f}, {hi:+.4f}]  {sig}")
+        print("\nGroups marked 'tied' must be reported as tied. An ordering among")
+        print("them is not supported by this test set and a reviewer who reruns it")
+        print("will find that out.")
+
+        if args.out:
+            Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.out).write_text(json.dumps(out, indent=2))
+            print(f"\nwrote {args.out}")
 
     # ---------------- TEST B ----------------
     print(f"\n{'=' * 74}\nB. LIKE-FOR-LIKE PRE/POST COMPARISON\n{'=' * 74}")
