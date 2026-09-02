@@ -1,0 +1,51 @@
+{
+  "n": 2500,
+  "families": [
+    "legal",
+    "medical",
+    "medical_alt",
+    "summarization"
+  ],
+  "cross_assignments": 0,
+  "transfer_hit_rate": 1.0,
+  "transfer_chance": 0.3333333333333333,
+  "pairwise_medical": {
+    "acc": 1.0,
+    "log_loss": 0.023996807841028606
+  },
+  "decomposition": {
+    "total_norm": {
+      "dims": 1,
+      "acc": 0.45,
+      "log_loss": 0.9186105169606057
+    },
+    "norm_profile": {
+      "dims": 88,
+      "acc": 1.0,
+      "log_loss": 0.029370373267575543
+    },
+    "shape_only": {
+      "dims": 368,
+      "acc": 1.0,
+      "log_loss": 0.059898686420676236
+    },
+    "norms_only": {
+      "dims": 184,
+      "acc": 1.0,
+      "log_loss": 0.015372970639187985
+    },
+    "full": {
+      "dims": 1288,
+      "acc": 1.0,
+      "log_loss": 0.015203791903961797
+    }
+  },
+  "baseline_final_train_loss": {
+    "acc": 0.5,
+    "log_loss": 0.8761089073821428
+  },
+  "baseline_tokens_seen": {
+    "acc": 0.25,
+    "log_loss": 0.9772785510667343
+  }
+}
