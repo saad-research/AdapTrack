@@ -1,0 +1,45 @@
+{
+  "target": "medical",
+  "n_test": 150,
+  "n_pos": 78,
+  "n_neg": 72,
+  "headline_auc": 0.968482905982906,
+  "min_count_rule": "n_pos < 10 skipped in fit_classifier.py; all bins reported here",
+  "bins": [
+    {
+      "lo": 0,
+      "hi": 0.2,
+      "n_pos": 5,
+      "auc": 0.7277777777777779,
+      "skipped_by_min_count_rule": true
+    },
+    {
+      "lo": 0.2,
+      "hi": 0.4,
+      "n_pos": 12,
+      "auc": 0.9247685185185184,
+      "skipped_by_min_count_rule": false
+    },
+    {
+      "lo": 0.4,
+      "hi": 0.6,
+      "n_pos": 10,
+      "auc": 0.9805555555555555,
+      "skipped_by_min_count_rule": false
+    },
+    {
+      "lo": 0.6,
+      "hi": 0.8,
+      "n_pos": 8,
+      "auc": 1.0,
+      "skipped_by_min_count_rule": true
+    },
+    {
+      "lo": 0.8,
+      "hi": 1.0,
+      "n_pos": 43,
+      "auc": 1.0,
+      "skipped_by_min_count_rule": false
+    }
+  ]
+}

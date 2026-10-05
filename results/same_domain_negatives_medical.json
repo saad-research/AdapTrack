@@ -1,0 +1,26 @@
+{
+  "target": "medical",
+  "definition": "negatives containing a medical_alt adapter and no medical adapter",
+  "n_pos": 78,
+  "n_neg_same_domain": 57,
+  "n_neg_other": 15,
+  "auc_vs_same_domain_negatives": 0.9637876743139902,
+  "ci_cluster": [
+    0.8836853382307928,
+    1.0
+  ],
+  "bootstrap": {
+    "function": "fit_classifier.cluster_bootstrap",
+    "rule": "merge kept only if ALL constituents resampled",
+    "n_boot": 1000,
+    "usable": 926,
+    "seed": 0,
+    "restriction_applied_before_resampling": true
+  },
+  "auc_vs_other_negatives": 0.9863247863247864,
+  "headline_auc": 0.968482905982906,
+  "headline_ci_cluster": [
+    0.9,
+    1.0
+  ]
+}
