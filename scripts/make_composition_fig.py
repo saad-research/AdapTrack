@@ -7,13 +7,14 @@ transcribed by hand. Expected columns:
 
     feature,target,r2,lo,hi
 
-  feature : fro_quad, fro_arith, nuc, sv_1, conc, stable_rank, eff_rank, entropy
+  feature : fro_quad, fro_arith, nuc, sv_1, conc, stable_rank, eff_rank, entropy 
   target  : medical | legal
   r2      : within-module R^2 (state which statistic in the caption --
             mean or median across modules -- and use the SAME one the prose
-            quotes; the 0.14-0.23 range in the text does not currently
-            reconcile with the per-feature values)
-  lo,hi   : 95% interval; leave blank if unavailable and bars draw without them
+            quotes; the paper quotes medians)
+  lo,hi   : interquartile range across modules -- dispersion, not a
+            confidence interval, matching what the paper's caption states.
+            Leave blank if unavailable and bars draw without them
 
 Usage:
     python make_composition_fig.py composition_r2.csv figs/composition.pdf
@@ -24,6 +25,8 @@ from collections import defaultdict
 
 import matplotlib
 matplotlib.use("Agg")
+matplotlib.rcParams["pdf.fonttype"] = 42
+matplotlib.rcParams["ps.fonttype"] = 42
 import matplotlib.pyplot as plt
 import numpy as np
 
