@@ -8,7 +8,11 @@ noise_defense.py -- defense 2x2 for AdapTrack: additive noise x canonicalization
 
   python scripts/noise_defense.py --pool ... --features ... --target medical \
       --layer-stride 2 --c 0.0 0.1 0.3 1.0 --methods linear dare_ties \
-      --adaptive --canon --train-subsample 250 --utility-merges 8
+      --adaptive --canon --train-subsample 250 --utility-merges 8 \
+      --out results
+
+  --out is a DIRECTORY. The result is written to
+  <out>/defense_2x2_<target>.json.
 
 THE 2x2
 -------
@@ -38,10 +42,29 @@ arms are therefore free given the noise arm.
   mode=full:    S = Gbar (train mean). Also pins the global scale, so the
                 magnitude channel carries zero information.
 
-Canonicalization is an ERASURE defense, not a SHIFT defense: the adaptive
-attacker can canonicalize their own shadow merges and gain nothing, because
-the information is gone rather than moved. Noise is a shift defense, and the
-naive->corrected rung gap is what shows it.
+DESIGN HYPOTHESIS, AND WHAT THE RUN SHOWED
+------------------------------------------
+This script was written to test a prediction: that canonicalization is an
+ERASURE defense rather than a SHIFT defense, so an adaptive attacker who
+canonicalizes their own shadow merges gains nothing, because the information
+is gone rather than moved.
+
+The run contradicted it (medical target, linear + dare_ties, c = 0):
+
+  canonicalization   naive 0.36-0.40   corrected 0.39-0.41   adaptive 0.88
+  noise, c = 1.0     naive ~0.88       corrected ~0.93       adaptive ~0.93
+
+Against a fixed attacker canonicalization drives AUC below chance, and
+recentring does not recover it. Retraining on defended features does. So the
+discriminative direction has ROTATED: a per-module rescale removes the
+Frobenius columns but turns the nuclear norm and singular values into the
+scale-free ratios nuc_m/fro_m and sigma_i,m/fro_m, which still carry the
+signal. Canonicalization is not erasure. Noise behaves as predicted: a shift,
+mostly absorbed by restandardizing.
+
+The prediction is left on record because the gap it exposes is the paper's
+transferable point: a defense scored against a fixed attacker can look
+decisive and cost an adaptive attacker about five points of AUC.
 
 rhobar is estimable by a real defender: profile matching showed mismatched
 cos = 0.994, i.e. any merge's normalized profile is within half a percent of
@@ -53,9 +76,10 @@ THREE RUNGS
   corrected -- clean coefficients, standardization refit on defended train
                (absorbs any deterministic affine shift, e.g. sqrt(1+c^2))
   adaptive  -- full refit on defended train features
-Report `adaptive` in the paper. naive/corrected go in the appendix: the gap
-between them is small for canonicalization and large for noise, and THAT
-asymmetry is the erasure-vs-shift argument made numerically.
+Report `adaptive` in the paper. The naive and corrected rungs are reported
+alongside it because the gap between a fixed and a retrained attacker is the
+result: recentring recovers the noise arm and recovers nothing for
+canonicalization (see above).
 
 WHY THE COSINE PROXY IS NOT A UTILITY MEASURE
 ---------------------------------------------
@@ -442,7 +466,14 @@ def tpr_at(y, s, f):
 
 def cluster_boot(scores, y, recipes, n=2000, seed=0):
     """Resample test ADAPTERS, not merges -- merges sharing a constituent are
-    not independent draws. Matches the CIs in the headline table."""
+    not independent draws.
+
+    Rule: a merge enters a replicate once for EACH drawn adapter it contains
+    (ANY rule, with multiplicity). diagnostics.py uses the same rule. This is
+    NOT the rule behind the headline table: fit_classifier.cluster_bootstrap
+    keeps a merge only if ALL of its constituents were drawn. Intervals from
+    the two rules are not interchangeable; the paper's statistical appendix
+    says which numbers use which."""
     rng = np.random.default_rng(seed)
     adapters = sorted({a for r in recipes for a in r["constituents"]})
     pos = {a: [i for i, r in enumerate(recipes) if a in r["constituents"]]
@@ -466,7 +497,9 @@ def main():
     ap.add_argument("--pool", required=True)
     ap.add_argument("--features", required=True,
                     help="dir holding the CLEAN features + recipes")
-    ap.add_argument("--out", default=None)
+    ap.add_argument("--out", default=None,
+                    help="output DIRECTORY (default: the features dir); the "
+                         "file is <out>/defense_2x2_<target>.json")
     ap.add_argument("--target", default="medical")
     ap.add_argument("--c", type=float, nargs="+",
                     default=[0.0, 0.1, 0.3, 1.0])
@@ -804,8 +837,20 @@ def main():
     for r in records:
         if r["arm"] == "canon" and r["c"] == 0.0:
             gap = r["auc_naive"] - r["auc_adaptive"]
-            print(f"Canon:{r['mode']} c=0: naive-vs-adaptive gap {gap:+.3f} "
-                  f"-- small gap = erasure, not shift.")
+            rec_gap = r["auc_corrected"] - r["auc_naive"]
+            if abs(gap) <= 0.05:
+                reading = ("fixed and retrained attackers agree: consistent "
+                           "with erasure.")
+            elif rec_gap > 0.5 * abs(gap):
+                reading = ("recentring recovers most of it: a shift, not "
+                           "erasure.")
+            else:
+                reading = ("recentring recovers little and retraining "
+                           "recovers the attack: the decision direction has "
+                           "rotated. NOT erasure -- a fixed attacker "
+                           "overstates this defense.")
+            print(f"Canon:{r['mode']} c=0: naive-vs-adaptive gap {gap:+.3f}, "
+                  f"corrected-vs-naive {rec_gap:+.3f} -- {reading}")
 
     p = out / f"defense_2x2_{args.target}.json"
     p.write_text(json.dumps(records, indent=2))
