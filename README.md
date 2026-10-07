@@ -102,9 +102,13 @@ to different results. This is documented behaviour — PEFT's own docstring
 describes `linear` as a rough approximation — and `combination_type="cat"`,
 which concatenates the factors, is exact. Everything here materializes Δ and
 applies operators to it directly (`src/merge/delta.py`,
-`docs/merge-semantics.md`). This is distinct from the weighting bug reported in
-`huggingface/peft` #1155 and addressed in #1169; the cross-term structure is
-not what that fix changed. `verify_merge_semantics.py --tiny-random` checks
+`docs/merge-semantics.md`). None of this is a new observation
+about PEFT: the discussion of `huggingface/peft` issue #1155 (November 2023)
+already notes that summing factors couples different adapters' B and A, that
+`linear` can only approximate a merge, and that `cat` is exact. The fix for
+that issue (#1169) changed how the weights are applied to the factors and left
+the cross terms in place. What this repository adds is the explicit form of
+the cross terms for the current implementation and a numerical check. `verify_merge_semantics.py --tiny-random` checks
 the derivation numerically on a small random model; under `peft==0.20.0` the
 mean residual is 9.4e-08 (`results/verify_merge_semantics_peft-0.20.0.txt`).
 
