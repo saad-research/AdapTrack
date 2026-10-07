@@ -190,6 +190,7 @@ def main():
     report["perm_p"] = float(p)
     report["perm_null_mean"] = float(null.mean())
 
+    report["perm_null_p95"] = float(np.percentile(null, 95))
     # ---------------- secondary ----------------
     print(f"\n{'=' * 70}\nSECONDARY: 2-layer MLP\n{'=' * 70}")
     try:
