@@ -14,6 +14,10 @@ script named beside it; none is edited by hand.
 | `diagnostics_medical.json` | `diagnostics.py` | paired differences and marginal intervals in Appendix G and Appendix I |
 | `token_control/matched_n2500.json`, `token_control/unmatched_n2500.json`, `token_control/matched_manifest.json` | `token_control.py`, `probe_diagnostics.py` | the token-volume control in Appendix K |
 | `verify_merge_semantics_peft-0.20.0.txt` | `verify_merge_semantics.py --tiny-random` | the numerical check of the PEFT cross-term derivation in Appendix D |
+| `global_norm_auc.json` | `global_norm_auc.py` | AUC of every single global-norm summary on merged updates (Section 4, Table 6 and its text) |
+| `token_control/single_feature_check.json` | `single_feature_check.py` | total-norm-alone accuracy under both rules, binomial tails and per-family bands (Appendix K, Table 9); median-length bands (Section 6) |
+| `floor_probe/floor_probe_report.json`, `floor_probe/manifest.json` | `floor_probe.py` | dataset-size recovery and per-size family accuracy on the 60-adapter size-varied pool (Appendix C) |
+| `pool/manifest_tinyllama.json` | `train_pool.py` | per-adapter wall time, peak memory, training loss and median sequence length of the 96-adapter pool (Appendix B compute paragraph; Section 6 length bands) |
 
 `composition_r2.csv` in the repository root is the input to
 `make_composition_fig.py`. Its 16 rows are the `within_median`, `within_q1` and
@@ -39,6 +43,13 @@ script named beside it; none is edited by hand.
   permutation-null summaries (`perm_null_mean`, `perm_null_p95`), which can
   differ in the sixth decimal across library versions because 200 classifiers
   are refit.
+- **Single-feature accuracies.** `probe_diagnostics.py` scores single
+  features with a standardized, regularized logistic regression, which
+  understates how separable four families are by one number. Its
+  single-feature rows (`total_norm`, and the token-count and training-loss
+  baselines) should be read alongside the nearest-neighbour figures in
+  `token_control/single_feature_check.json`. The token-count and training-loss
+  baselines in `probe_diagnostics_*` are not used in the paper.
 - **`by_lambda` in `results_*`** omits merge-weight bins with fewer than 10
   positives. `by_lambda_all_*` reports all five bins and marks the ones that
   rule skips.
