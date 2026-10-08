@@ -185,8 +185,10 @@ acceptable cost.
 
 The main confound is token volume, and it has been tested, with limits.
 Fine-tuning token volume differs sharply across the four families in the main
-pool, and a classifier given token counts alone separates them perfectly —
-though no attacker observes those counts. The total Frobenius norm, the most
+pool, and a classifier given token counts alone separates them perfectly
+though no attacker observes those counts: per-family median
+sequence lengths do not overlap (about 53, 94, 133 and 512 tokens for
+MedMCQA, PubMedQA, LEDGAR and summarization). The total Frobenius norm, the most
 direct proxy an attacker has, reaches only 0.554 and correlates with token
 count at 0.44, which rules out the simplest version. To test the rest, a
 token-volume-matched pool was trained: 20 adapters, five per family, with
