@@ -195,8 +195,7 @@ token-volume-matched pool was trained: 20 adapters, five per family, with
 inputs truncated to 64 tokens, which brings the largest ratio of mean token
 count between families down to 1.21x. On that pool the four families remain
 fully separable from weights (leave-one-out accuracy 100%), and log loss rises
-from 0.0152 on the unmatched pool to 0.0314. Token counts and final training
-loss, used alone, fall to chance there. The paper reports this in the
+from 0.0152 on the unmatched pool to 0.0314. The paper reports this in the
 token-volume appendix; the files are in `results/token_control/`.
 
 What that control does not show. It is a four-way problem on 20 unmerged
