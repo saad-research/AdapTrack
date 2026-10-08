@@ -47,6 +47,15 @@ def main():
             if n.startswith("GLOBAL.fro."):
                 auc = float(roc_auc_score(y, te["X"][:, i]))
                 rows[n] = {"auc": auc, "flipped": 1 - auc, "best": max(auc, 1 - auc)}
+        # whole-update Frobenius norm over the extracted modules:
+        # sqrt(sum_m ||Delta_m||_F^2), from the per-module .fro columns
+        import re
+        idx = [i for i, n in enumerate(names)
+               if not n.startswith("GLOBAL") and re.search(r"\.fro$", n)]
+        tot = np.sqrt((te["X"][:, idx] ** 2).sum(1))
+        auc = float(roc_auc_score(y, tot))
+        rows[f"total_fro_sqrt_sum_sq_{len(idx)}_modules"] = {
+            "auc": auc, "flipped": 1 - auc, "best": max(auc, 1 - auc)}
         res[t] = {"n_test": int(len(y)), "summaries": rows,
                   "max_best": max(r["best"] for r in rows.values())}
         for n, r in rows.items():
