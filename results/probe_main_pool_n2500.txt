@@ -1,1 +1,0 @@
-analysing 96 adapters at n=2500
