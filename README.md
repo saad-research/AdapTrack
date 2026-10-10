@@ -154,6 +154,15 @@ is for editing and drifts on purpose.
 
     python scripts/verify_merge_semantics.py --tiny-random
 
+    python scripts/single_feature_check.py --root <drive_root> \
+      --out results/token_control/single_feature_check.json
+
+    python scripts/global_norm_auc.py --features <features> \
+      --out results/global_norm_auc.json
+
+    python scripts/floor_probe.py --sizes 500 1500 2500 --per-family 5
+    python scripts/probe_diagnostics.py --probe-dir <pool> --n 2500
+
 Notes that matter:
 
 - `diagnostics.py` requires `--merges`. Without it the bootstrap resamples
