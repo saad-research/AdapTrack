@@ -23,6 +23,8 @@ This is task-family provenance, not contributive attribution. It doesn't ask
 which training examples caused a behaviour; it asks whether a task family
 participated at all, decided from parameters without ever running the model.
 
+![How the attack works](figs/pipeline.png)
+
 The positive class is corpus-specific. Two of the four families are medical
 (MedMCQA and PubMedQA). For the medical target a merge is positive only if it
 contains a MedMCQA adapter; a merge containing PubMedQA adapters and no MedMCQA
@@ -67,20 +69,22 @@ token-volume analysis).
 
 **The attack works and isn't reading anything trivial.** AUC 0.969 (medical)
 and 0.975 (legal) under adapter-level holdout, with cluster bootstrap intervals
-resampling adapters rather than merges, and a permutation null. A single
-scalar — the Frobenius norm of the whole merged update — reaches only 0.554 and
-0.510, so it isn't reading overall update size.
+resampling adapters rather than merges, and a permutation null. Single global-norm summaries of the merged update reach only 0.51 to 0.60 (`results/global_norm_auc.json`), so it isn't reading overall update size.
 
 **It separates two corpora from the same domain.** Scoring the medical
 positives against only the negatives that contain a PubMedQA adapter and no
 MedMCQA adapter gives AUC 0.964 (cluster interval 0.884 to 1.000).
+
+**It is harder when the target is a small part of the merge.** Detection is perfect when the target carries at least 80% of the merge weight and falls to 0.73 (MedMCQA) and 0.66 (LEDGAR) below 20%, where only 5 test merges exist.
+
+![Attack AUC by the target's share of the merge weight](figs/lambda_bins.png)
 
 **Composition preserves magnitude and nothing finer.** For linear merges, the
 quadrature predictor for per-module Frobenius norm passes through at median
 within-module R² 0.96. Every finer spectral statistic — including σ₁ itself and
 the arithmetic Frobenius predictor — falls below 0.41.
 
-**Two defenses fail against an adaptive attacker.** Isotropic noise at c=1.0
+**Two defenses don't stop an adaptive attacker.** Isotropic noise at c=1.0
 doesn't reduce the attack at all. Canonicalization, which erases per-module
 magnitude allocation and global scale, costs about 0.05 AUC. Neither drops the
 attack below 0.87 against a baseline of 0.93 on the same subset.
@@ -91,6 +95,8 @@ against a fixed classifier, full canonicalization appears to drive the attack
 (0.39). Retraining the attacker on canonicalized merges recovers 0.88. This is
 the transferable result: a defense evaluated without retraining the attacker
 will look far stronger than it is.
+
+![Fixed versus retrained attacker under each defense](figs/defense_gap.png)
 
 **PEFT's `linear` combination is not a linear merge of the updates.** PEFT's
 `add_weighted_adapter` with `combination_type="linear"` scales the LoRA
@@ -189,17 +195,14 @@ Notes that matter:
 
 A single base model at one adapter rank, four task families, two targets. The
 defense sweep covers one target and one noise level, with no functional utility
-measurement — so it establishes that the defenses fail, not that they fail at
-acceptable cost.
+measurement — so it establishes that the tested configurations do not stop the attack, not what they cost in model quality.
 
 The main confound is token volume, and it has been tested, with limits.
 Fine-tuning token volume differs sharply across the four families in the main
 pool, and a classifier given token counts alone separates them perfectly
 though no attacker observes those counts: per-family median
 sequence lengths do not overlap (about 53, 94, 133 and 512 tokens for
-MedMCQA, PubMedQA, LEDGAR and summarization). The total Frobenius norm, the most
-direct proxy an attacker has, reaches only 0.554 and correlates with token
-count at 0.44, which rules out the simplest version. To test the rest, a
+MedMCQA, PubMedQA, LEDGAR and summarization). On merged updates, single global-norm summaries reach only 0.51 to 0.60, which rules out the simplest version. To test the rest, a
 token-volume-matched pool was trained: 20 adapters, five per family, with
 inputs truncated to 64 tokens, which brings the largest ratio of mean token
 count between families down to 1.21x. On that pool the four families remain
