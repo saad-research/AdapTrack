@@ -12,7 +12,7 @@ script named beside it; none is edited by hand.
 | `ablation_{target}.json` | `ablation_stats.py`, Test A | Table 6 |
 | `defense_2x2_medical.json` | `noise_defense.py` | Table 2 |
 | `diagnostics_medical.json` | `diagnostics.py` | the paired differences in Sections 5 and 6 and the resampling rules in Appendix I |
-| `token_control/matched_n2500.json`, `token_control/unmatched_n2500.json`, `token_control/matched_manifest.json` | `token_control.py`, `probe_diagnostics.py` | the token-volume control in Appendix K |
+| `token_control/matched_n2500.json`, `token_control/unmatched_n2500.json`, `token_control/matched_manifest.json` | `token_control.py`, `probe_diagnostics.py` | the token-volume control in Appendix K; the Section 4 transfer result and Appendix J (unmatched 20-adapter pool: transfer_hit_rate, 4-way LOO accuracy and log loss; mean probability 0.711 is printed output in notebook/AdapTrack_submission_sep2026.ipynb, cell 10) |
 | `verify_merge_semantics_peft-0.20.0.txt` | `verify_merge_semantics.py --tiny-random` | the numerical check of the PEFT cross-term derivation in Appendix D |
 | `global_norm_auc.json` | `global_norm_auc.py` | AUC of every single global-norm summary on merged updates (the 0.605 ceiling in Section 4 and Appendix K; Table 6 reports only `GLOBAL.fro.mean`, from `ablation_stats.py`) |
 | `token_control/single_feature_check.json` | `single_feature_check.py` | total-norm-alone accuracy under both rules, binomial tails and per-family bands (Appendix K, Table 10); median-length bands (Section 6) |
